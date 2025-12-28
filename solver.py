@@ -46,7 +46,46 @@ def playGame(words):
         while len(pattern) != WORD_LENGTH:
             pattern = input("Enter Pattern (B/Y/G): ")
         remaining = filterBad(remaining, guess, pattern)
-        for word in remaining:
-            print(word)
+        ranked = rankRemaining(remaining)
+        for pair in ranked:
+            print(pair[0] + " " + str(pair[1]))
+
+def getPatternGroups(guess, remainingWords):
+    patternGroups = {}
+    for word in remainingWords:
+        pattern = getPattern(guess, word)
+        if pattern in patternGroups:
+            patternGroups[pattern].append(word)
+        else:
+            patternGroups[pattern] = [word]
+    return patternGroups
+
+def getLargestGroup(patternGroups):
+    max = 0
+    for pattern in patternGroups:
+        if len(patternGroups[pattern]) > max:
+            max = len(patternGroups[pattern])
+    return max
+
+def getNumGroups(patternGroups):
+    return len(patternGroups)
+
+def chanceOfCorrect(total):
+    return f"{round(100/total)}%"
+
+def calculateExpectedRemaining(patternGroups, total):
+    sum = 0
+    for pattern in patternGroups:
+        sum += len(patternGroups[pattern]) * len(patternGroups[pattern])
+    return round(sum/total, 1)
+
+def rankRemaining(remainingWords):
+    rankedResults = []
+    for word in remainingWords:
+        resultingPatternGroups = getPatternGroups(word, remainingWords)
+        expectedSolutionsAfter = calculateExpectedRemaining(resultingPatternGroups, len(remainingWords))
+        rankedResults.append((word, expectedSolutionsAfter))
+    rankedResults.sort(key=lambda x: x[1])
+    return rankedResults
 
 playGame(words)
