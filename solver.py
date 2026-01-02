@@ -1,7 +1,7 @@
 words = []
 WORD_LENGTH = 5
 
-with open('words.txt', 'r') as file:
+with open('solutions.txt', 'r') as file:
     for line in file:
         words.append(line.strip())
 
@@ -9,11 +9,9 @@ def getPattern(guess, answer):
     guessLower = guess.lower()
     answerLower = answer.lower()
     pattern = [''] * WORD_LENGTH
-    # Create a dictionary of counts
     letterCounts = {}
     for letter in answerLower:
         letterCounts[letter] = letterCounts.get(letter, 0) + 1
-    # Check for greens
     for i in range(WORD_LENGTH):
         cur = guessLower[i]
         if cur == answerLower[i]:
@@ -36,20 +34,6 @@ def filterBad(wordList, guess, pattern):
             validWords.append(word)
     return validWords
 
-def playGame(words):
-    remaining = words
-    while len(remaining) > 1:
-        guess = ""
-        while len(guess) != WORD_LENGTH:
-            guess = input("Enter Guess: ")
-        pattern = ""
-        while len(pattern) != WORD_LENGTH:
-            pattern = input("Enter Pattern (B/Y/G): ")
-        remaining = filterBad(remaining, guess, pattern)
-        ranked = rankRemaining(remaining)
-        for pair in ranked:
-            print(pair[0] + " " + str(pair[1]))
-
 def getPatternGroups(guess, remainingWords):
     patternGroups = {}
     for word in remainingWords:
@@ -70,8 +54,13 @@ def getLargestGroup(patternGroups):
 def getNumGroups(patternGroups):
     return len(patternGroups)
 
-def chanceOfCorrect(total):
-    return f"{round(100/total)}%"
+def chanceOfCorrect(guess, remaining):
+    if guess in remaining:
+        percent = round(100/len(remaining))
+        if percent < 1:
+            return "<1%"
+        return f"{percent}%"
+    return "0%"
 
 def calculateExpectedRemaining(patternGroups, total):
     sum = 0
@@ -79,13 +68,39 @@ def calculateExpectedRemaining(patternGroups, total):
         sum += len(patternGroups[pattern]) * len(patternGroups[pattern])
     return round(sum/total, 1)
 
-def rankRemaining(remainingWords):
+def rankRemaining(remaining):
     rankedResults = []
-    for word in remainingWords:
-        resultingPatternGroups = getPatternGroups(word, remainingWords)
-        expectedSolutionsAfter = calculateExpectedRemaining(resultingPatternGroups, len(remainingWords))
+    for word in remaining:
+        resultingPatternGroups = getPatternGroups(word, remaining)
+        expectedSolutionsAfter = calculateExpectedRemaining(resultingPatternGroups, len(remaining))
         rankedResults.append((word, expectedSolutionsAfter))
     rankedResults.sort(key=lambda x: x[1])
     return rankedResults
+
+def playGame(words):
+    remaining = words
+    firstGuess = True
+    while len(remaining) > 1:
+        guess = ""
+        while len(guess) != WORD_LENGTH:
+            guess = input("Enter Guess: ")
+            if not firstGuess and guess not in remaining:
+                print(f"'{guess}' is not a valid remaining word. Try again.")
+                guess = ""
+        firstGuess = False
+        pattern = ""
+        while len(pattern) != WORD_LENGTH:
+            pattern = input("Enter Pattern (B/Y/G): ")
+        old_remaining = remaining
+        remaining = filterBad(remaining, guess, pattern)
+        ranked = rankRemaining(remaining)
+        patternGroups = getPatternGroups(guess, old_remaining)
+        print(f"\n--- Results from your guess '{guess}' ---")
+        print(f"Expected solutions after: {calculateExpectedRemaining(patternGroups, len(old_remaining))}")
+        print(f"Actual solutions after: {len(remaining)}")
+        print(f"Estimated chance guess was solution: {chanceOfCorrect(guess, old_remaining)}")
+        for pair in ranked:
+            print(f"{pair[0]} {str(pair[1])}")
+
 
 playGame(words)
