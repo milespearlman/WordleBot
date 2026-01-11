@@ -77,30 +77,32 @@ def rankRemaining(remaining):
     rankedResults.sort(key=lambda x: x[1])
     return rankedResults
 
-def playGame(words):
-    remaining = words
-    firstGuess = True
-    while len(remaining) > 1:
-        guess = ""
-        while len(guess) != WORD_LENGTH:
-            guess = input("Enter Guess: ")
-            if not firstGuess and guess not in remaining:
-                print(f"'{guess}' is not a valid remaining word. Try again.")
-                guess = ""
-        firstGuess = False
-        pattern = ""
-        while len(pattern) != WORD_LENGTH:
-            pattern = input("Enter Pattern (B/Y/G): ")
-        old_remaining = remaining
-        remaining = filterBad(remaining, guess, pattern)
-        ranked = rankRemaining(remaining)
-        patternGroups = getPatternGroups(guess, old_remaining)
-        print(f"\n--- Results from your guess '{guess}' ---")
-        print(f"Expected solutions after: {calculateExpectedRemaining(patternGroups, len(old_remaining))}")
-        print(f"Actual solutions after: {len(remaining)}")
-        print(f"Estimated chance guess was solution: {chanceOfCorrect(guess, old_remaining)}")
-        for pair in ranked:
-            print(f"{pair[0]} {str(pair[1])}")
 
+# Original Command Line Code
 
-playGame(words)
+# def playGame(words):
+#     remaining = words
+#     firstGuess = True
+#     while len(remaining) > 1:
+#         guess = ""
+#         while len(guess) != WORD_LENGTH:
+#             guess = input("Enter Guess: ")
+#             if not firstGuess and guess not in remaining:
+#                 print(f"'{guess}' is not a valid remaining word. Try again.")
+#                 guess = ""
+#         firstGuess = False
+#         pattern = ""
+#         while len(pattern) != WORD_LENGTH:
+#             pattern = input("Enter Pattern (B/Y/G): ")
+#         old_remaining = remaining
+#         remaining = filterBad(remaining, guess, pattern)
+#         ranked = rankRemaining(remaining)
+#         patternGroups = getPatternGroups(guess, old_remaining)
+#         print(f"\n--- Results from your guess '{guess}' ---")
+#         print(f"Expected solutions after: {calculateExpectedRemaining(patternGroups, len(old_remaining))}")
+#         print(f"Actual solutions after: {len(remaining)}")
+#         print(f"Estimated chance guess was solution: {chanceOfCorrect(guess, old_remaining)}")
+#         for pair in ranked:
+#             print(f"{pair[0]} {str(pair[1])}")
+
+# playGame(words)
