@@ -11,29 +11,46 @@ async function getAllWords() {
 
 // Display results
 function displayResults(data) {
-    const resultsDiv = document.getElementById('results');
+    // Update stats section
+    const statsDiv = document.getElementById('stats');
+    statsDiv.innerHTML = `
+        <h3>Stats</h3>
+        <div class="stat-item">
+            <span class="stat-label">Expected solutions:</span>
+            <span class="stat-value">${data.stats.expected_solutions}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Actual solutions:</span>
+            <span class="stat-value">${data.stats.actual_solutions}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Chance correct:</span>
+            <span class="stat-value">${data.stats.chance_correct}</span>
+        </div>
+    `;
     
-    let html = '<div style="margin: 20px 0;">';
-    html += `<h3>Stats</h3>`;
-    html += `<p>Expected solutions: ${data.stats.expected_solutions}</p>`;
-    html += `<p>Actual solutions: ${data.stats.actual_solutions}</p>`;
-    html += `<p>Chance correct: ${data.stats.chance_correct}</p>`;
-    html += '</div>';
-    
-    // Add scrollable word list
-    html += '<div style="margin: 20px 0;">';
-    html += '<h3>Remaining Words (Ranked)</h3>';
-    html += '<div style="max-height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">';
+    // Update solutions section with progress bars
+    const solutionsDiv = document.getElementById('solutions');
+    let html = '<h3>Remaining Words (Ranked)</h3>';
+    html += '<div class="solutions-list">';
     
     data.ranked.forEach(([word, score]) => {
-        html += `<div style="padding: 5px; border-bottom: 1px solid #eee;">
-                    ${word}: ${score}
-                 </div>`;
+        const barWidth = score <= 1 ? 100 : Math.max(3, 100 / score);
+        const barColor = score <= 1.5 ? 'excellent' : score <= 3 ? 'good' : score <= 6 ? 'decent' : 'poor';
+        
+        html += `
+            <div class="solution-item">
+                <span class="solution-word">${word}</span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar ${barColor}" style="width: ${barWidth}%"></div>
+                </div>
+                <span class="solution-score">${score}</span>
+            </div>
+        `;
     });
     
-    html += '</div></div>';
-    
-    resultsDiv.innerHTML = html;
+    html += '</div>';
+    solutionsDiv.innerHTML = html;
 }
 
 // Create the initial grid (6 rows like Wordle)
@@ -173,5 +190,6 @@ document.getElementById('resetBtn').addEventListener('click', () => {
     currentRemaining = null;
     
     // Clear results
-    document.getElementById('results').innerHTML = '';
+    document.getElementById('stats').innerHTML = '';
+    document.getElementById('solutions').innerHTML = '';
 });
