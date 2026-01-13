@@ -16,16 +16,25 @@ function displayResults(data) {
     statsDiv.innerHTML = `
         <h3>Stats</h3>
         <div class="stat-item">
-            <span class="stat-label">Expected solutions:</span>
-            <span class="stat-value">${data.stats.expected_solutions}</span>
+            <span class="stat-label">Expected Solutions:</span>
+            <span class="stat-value">${data.stats.expectedSolutions}</span>
         </div>
         <div class="stat-item">
-            <span class="stat-label">Actual solutions:</span>
-            <span class="stat-value">${data.stats.actual_solutions}</span>
+            <span class="stat-label">Actual Solutions:</span>
+            <span class="stat-value">${data.stats.actualSolutions}</span>
         </div>
         <div class="stat-item">
-            <span class="stat-label">Chance correct:</span>
-            <span class="stat-value">${data.stats.chance_correct}</span>
+            <span class="stat-label">Chance Correct:</span>
+            <span class="stat-value">${data.stats.chanceCorrect}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Solutions Eliminated:</span>
+            <span class="stat-value">${data.stats.percentEliminated}%</span>
+        </div>
+        <div style="margin-top: 1rem;">
+            <div class="progress-bar-container" style="height: 12px;">
+                <div class="progress-bar excellent" style="width: ${data.stats.percentEliminated}%"></div>
+            </div>
         </div>
     `;
     

@@ -10,7 +10,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
-def read_root():
+def readRoot():
     return FileResponse("static/index.html")
 
 # Test endpoint
@@ -19,7 +19,7 @@ def test():
     return {"message": "FastAPI is working!"}
 
 @app.get("/words")
-def get_words():
+def getWords():
     return words
 
 class GuessRequest(BaseModel):
@@ -28,18 +28,19 @@ class GuessRequest(BaseModel):
     remaining: list[str]  # List of words still possible
 
 @app.post("/analyze")
-def analyze_guess(request: GuessRequest):
+def analyzeGuess(request: GuessRequest):
     # Filter remaining words based on guess and pattern
     filtered = filterBad(request.remaining, request.guess, request.pattern)
     
     # Get pattern groups for stats
-    pattern_groups = getPatternGroups(request.guess, request.remaining)
+    patternGroups = getPatternGroups(request.guess, request.remaining)
     
     # Calculate stats
     stats = {
-        "expected_solutions": calculateExpectedRemaining(pattern_groups, len(request.remaining)),
-        "actual_solutions": len(filtered),
-        "chance_correct": chanceOfCorrect(request.guess, request.remaining)
+        "expectedSolutions": calculateExpectedRemaining(patternGroups, len(request.remaining)),
+        "actualSolutions": len(filtered),
+        "chanceCorrect": chanceOfCorrect(request.guess, request.remaining),
+        "percentEliminated": calculatePercentElim(len(filtered))
     }
     
     # Rank remaining words

@@ -5,6 +5,8 @@ with open('solutions.txt', 'r') as file:
     for line in file:
         words.append(line.strip())
 
+WORD_POOL_TOTAL = len(words)
+
 def getPattern(guess, answer):
     guessLower = guess.lower()
     answerLower = answer.lower()
@@ -60,13 +62,16 @@ def chanceOfCorrect(guess, remaining):
         if percent < 1:
             return "<1%"
         return f"{percent}%"
-    return "0%"
+    return f"0% ('{guess}' isnt't a valid word)"
 
 def calculateExpectedRemaining(patternGroups, total):
     sum = 0
     for pattern in patternGroups:
         sum += len(patternGroups[pattern]) * len(patternGroups[pattern])
     return round(sum/total, 1)
+
+def calculatePercentElim(remainingCount):
+    return round((1 - remainingCount / WORD_POOL_TOTAL) * 100, 1)
 
 def rankRemaining(remaining):
     rankedResults = []
