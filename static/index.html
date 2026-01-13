@@ -126,6 +126,67 @@
         padding: 1.5rem;
     }
 
+    .solutions-list {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+    }
+
+    .solution-item {
+        display: grid;
+        grid-template-columns: 2fr 3fr 1fr;
+        gap: 1rem;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #334155;
+    }
+
+    .solution-word {
+        font-family: monospace;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .progress-bar-container {
+        height: 8px;
+        background: #334155;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        border-radius: 4px;
+    }
+
+    .progress-bar.excellent { background: #10b981; }
+    .progress-bar.good { background: #3b82f6; }
+    .progress-bar.decent { background: #f59e0b; }
+    .progress-bar.poor { background: #ef4444; }
+
+    .solution-score {
+        font-family: monospace;
+        font-size: 0.875rem;
+        color: #94a3b8;
+        text-align: right;
+    }
+
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #334155;
+    }
+
+    .stat-label {
+        color: #94a3b8;
+    }
+
+    .stat-value {
+        font-weight: 600;
+    }
+
     @media (max-width: 1024px) {
         .container {
             grid-template-columns: 1fr;
@@ -135,7 +196,7 @@
 </head>
 <body>
     <header>
-        <h1>Wordle Solver</h1>
+        <h1>Pearlman's Wordle Solver</h1>
         <button id="resetBtn">Reset</button>
     </header>
 
