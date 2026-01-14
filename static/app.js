@@ -186,4 +186,36 @@ document.getElementById('resetBtn').addEventListener('click', () => {
     document.getElementById('solutions').innerHTML = '';
 });
 
+// To work on mobile
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const mobileInput = document.getElementById('mobileInput');
+
+if (isMobile) {
+    document.getElementById('board').addEventListener('click', (e) => {
+        if (e.target.classList.contains('cell') && 
+            parseInt(e.target.dataset.row) === currentRow &&
+            !e.target.textContent) {
+            mobileInput.style.pointerEvents = 'auto';
+            mobileInput.focus();
+            e.stopPropagation();
+        }
+    });
+    
+    mobileInput.addEventListener('input', (e) => {
+        const letter = e.target.value.slice(-1).toUpperCase();
+        if (/[A-Z]/.test(letter)) {
+            const currentCells = document.querySelectorAll(`[data-row="${currentRow}"]`);
+            const emptyCell = Array.from(currentCells).find(cell => !cell.textContent);
+            if (emptyCell) {
+                emptyCell.textContent = letter;
+            }
+            if (Array.from(currentCells).every(cell => cell.textContent)) {
+                mobileInput.blur();
+                mobileInput.style.pointerEvents = 'none';
+            }
+        }
+        mobileInput.value = '';
+    });
+}
+
 createGrid();
