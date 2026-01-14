@@ -2,7 +2,7 @@ let currentRow = 0;
 let currentRemaining = null;
 
 // For mobile compatibility
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
 const mobileInput = document.getElementById('mobileInput');
 
 async function getAllWords() {
@@ -203,8 +203,10 @@ if (isMobile) {
     });
     
     mobileInput.addEventListener('input', (e) => {
+        console.log('Mobile input fired:', e.target.value);
         const letter = e.target.value.slice(-1).toUpperCase();
         if (/[A-Z]/.test(letter)) {
+            console.log('Adding letter:', letter);
             const currentCells = document.querySelectorAll(`[data-row="${currentRow}"]`);
             const emptyCell = Array.from(currentCells).find(cell => !cell.textContent);
             if (emptyCell) {
