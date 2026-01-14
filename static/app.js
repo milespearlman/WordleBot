@@ -203,10 +203,8 @@ if (isMobile) {
     });
     
     mobileInput.addEventListener('input', (e) => {
-        console.log('Mobile input fired:', e.target.value);
         const letter = e.target.value.slice(-1).toUpperCase();
         if (/[A-Z]/.test(letter)) {
-            console.log('Adding letter:', letter);
             const currentCells = document.querySelectorAll(`[data-row="${currentRow}"]`);
             const emptyCell = Array.from(currentCells).find(cell => !cell.textContent);
             if (emptyCell) {
