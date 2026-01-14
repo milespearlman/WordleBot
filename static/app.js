@@ -1,6 +1,10 @@
 let currentRow = 0;
 let currentRemaining = null;
 
+// For mobile compatibility
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const mobileInput = document.getElementById('mobileInput');
+
 async function getAllWords() {
     const response = await fetch('/words');
     return await response.json();
@@ -188,10 +192,6 @@ document.getElementById('resetBtn').addEventListener('click', () => {
     document.getElementById('stats').innerHTML = '';
     document.getElementById('solutions').innerHTML = '';
 });
-
-// To work on mobile
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-const mobileInput = document.getElementById('mobileInput');
 
 if (isMobile) {
     document.getElementById('board').addEventListener('click', (e) => {
