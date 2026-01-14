@@ -92,6 +92,9 @@ function toggleCellColor(cell) {
 
 // Some key is pressed
 document.addEventListener('keydown', (e) => {
+    // Gets rid of repetition with later mobile input code
+    if (isMobile) return;
+    // If game over
     if (currentRow >= 6) return;
     
     const currentCells = document.querySelectorAll(`[data-row="${currentRow}"]`);
