@@ -142,7 +142,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     const validWords = currentRow === 0 ? await getAllWords() : currentRemaining;
 
     if (currentRow > 0 && !validWords.includes(guess.toLowerCase())) {
-        alert('That word is not a valid remaining solution. Please enter a different guess.');
+        alert('That word is not a valid remaining solution. Please enter a different guess from the list.');
         return;
     }
     
@@ -193,11 +193,9 @@ const mobileInput = document.getElementById('mobileInput');
 if (isMobile) {
     document.getElementById('board').addEventListener('click', (e) => {
         if (e.target.classList.contains('cell') && 
-            parseInt(e.target.dataset.row) === currentRow &&
-            !e.target.textContent) {
-            mobileInput.style.pointerEvents = 'auto';
+            parseInt(e.target.dataset.row) === currentRow) {
+            e.preventDefault();
             mobileInput.focus();
-            e.stopPropagation();
         }
     });
     
@@ -208,10 +206,6 @@ if (isMobile) {
             const emptyCell = Array.from(currentCells).find(cell => !cell.textContent);
             if (emptyCell) {
                 emptyCell.textContent = letter;
-            }
-            if (Array.from(currentCells).every(cell => cell.textContent)) {
-                mobileInput.blur();
-                mobileInput.style.pointerEvents = 'none';
             }
         }
         mobileInput.value = '';
