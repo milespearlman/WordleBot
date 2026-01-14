@@ -6,17 +6,11 @@ from solver import *
 
 app = FastAPI()
 
-# Serve static files (your HTML/CSS/JS)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def readRoot():
     return FileResponse("static/index.html")
-
-# Test endpoint
-@app.get("/test")
-def test():
-    return {"message": "FastAPI is working!"}
 
 @app.get("/words")
 def getWords():
@@ -25,17 +19,13 @@ def getWords():
 class GuessRequest(BaseModel):
     guess: str
     pattern: str
-    remaining: list[str]  # List of words still possible
+    remaining: list[str]
 
 @app.post("/analyze")
 def analyzeGuess(request: GuessRequest):
-    # Filter remaining words based on guess and pattern
     filtered = filterBad(request.remaining, request.guess, request.pattern)
-    
-    # Get pattern groups for stats
     patternGroups = getPatternGroups(request.guess, request.remaining)
     
-    # Calculate stats
     stats = {
         "expectedSolutions": calculateExpectedRemaining(patternGroups, len(request.remaining)),
         "actualSolutions": len(filtered),
@@ -43,7 +33,6 @@ def analyzeGuess(request: GuessRequest):
         "percentEliminated": calculatePercentElim(len(filtered))
     }
     
-    # Rank remaining words
     ranked = rankRemaining(filtered)
     
     return {

@@ -1,17 +1,12 @@
 let currentRow = 0;
-let currentGuesses = [];
-
 let currentRemaining = null;
 
-// Get all words on first guess
 async function getAllWords() {
     const response = await fetch('/words');
     return await response.json();
 }
 
-// Display results
 function displayResults(data) {
-    // Update stats section
     const statsDiv = document.getElementById('stats');
     statsDiv.innerHTML = `
         <h3>Stats</h3>
@@ -38,14 +33,14 @@ function displayResults(data) {
         </div>
     `;
     
-    // Update solutions section with progress bars
+    // add progress bars for each solution
     const solutionsDiv = document.getElementById('solutions');
     let html = '<h3>Remaining Words (Ranked)</h3>';
     html += '<div class="solutions-list">';
     
     data.ranked.forEach(([word, score]) => {
         const barWidth = score <= 1 ? 100 : Math.max(3, 100 / score);
-        const barColor = score <= 1.5 ? 'excellent' : score <= 3 ? 'good' : score <= 6 ? 'decent' : 'poor';
+        const barColor = score <= 3.5 ? 'excellent' : score <= 10 ? 'good' : score <= 22 ? 'decent' : 'poor';
         
         html += `
             <div class="solution-item">
@@ -62,7 +57,6 @@ function displayResults(data) {
     solutionsDiv.innerHTML = html;
 }
 
-// Create the initial grid (6 rows like Wordle)
 function createGrid() {
     const board = document.getElementById('board');
     for (let row = 0; row < 6; row++) {
@@ -77,11 +71,11 @@ function createGrid() {
     }
 }
 
-// Toggle cell color: gray -> yellow -> green -> gray
 function toggleCellColor(cell) {
+    // Wrong row
     if (parseInt(cell.dataset.row) !== currentRow) return;
-
-    if (!cell.textContent) return; // Can't toggle empty cells
+    // Nothing typed yet
+    if (!cell.textContent) return;
     
     if (!cell.classList.contains('gray') && !cell.classList.contains('yellow') && !cell.classList.contains('green')) {
         cell.classList.add('gray');
@@ -96,26 +90,23 @@ function toggleCellColor(cell) {
     }
 }
 
-// Handle keyboard input
+// Some key is pressed
 document.addEventListener('keydown', (e) => {
     if (currentRow >= 6) return;
     
     const currentCells = document.querySelectorAll(`[data-row="${currentRow}"]`);
     let currentCol = Array.from(currentCells).findIndex(cell => !cell.textContent);
     
-    // If all cells are filled, set cursor to end
+    // Lets backspace work correctly by putting cursor at last col if row is full
     if (currentCol === -1) currentCol = 5;
     
     if (e.key === 'Enter') {
-        // Trigger analyze button
         document.getElementById('submitBtn').click();
     } else if (e.key === 'Backspace') {
         if (currentCol === 5 && currentCells[4].textContent) {
-            // Delete last letter if row is full
             currentCells[4].textContent = '';
-            currentCells[4].classList.remove('gray', 'yellow', 'green');  // ADD THIS LINE
+            currentCells[4].classList.remove('gray', 'yellow', 'green');
         } else if (currentCol > 0) {
-            // Delete previous letter
             currentCells[currentCol - 1].textContent = '';
             currentCells[currentCol - 1].classList.remove('gray', 'yellow', 'green');
         }
@@ -124,22 +115,18 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Initialize
-createGrid();
-
 document.getElementById('submitBtn').addEventListener('click', async () => {
     if (currentRow >= 6) return;
     
     const currentCells = document.querySelectorAll(`[data-row="${currentRow}"]`);
     
-    // Check all cells have letters
+    // Ensure row is full
     const guess = Array.from(currentCells).map(cell => cell.textContent).join('');
     if (guess.length !== 5) {
         alert('Please enter a 5-letter word');
         return;
     }
     
-    // Check all cells have colors
     const pattern = Array.from(currentCells).map(cell => {
         if (cell.classList.contains('green')) return 'G';
         if (cell.classList.contains('yellow')) return 'Y';
@@ -147,20 +134,19 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         return null;
     }).join('');
     
+    // Ensure each cell has a color selected
     if (pattern.includes('null') || pattern.length !== 5) {
     alert('Please click each letter to set its color');
     return;
 }
-    // Get list of valid words to check against
     const validWords = currentRow === 0 ? await getAllWords() : currentRemaining;
 
-    // Check if guess is valid (skip check for first guess)
     if (currentRow > 0 && !validWords.includes(guess.toLowerCase())) {
         alert('That word is not a valid remaining solution. Please enter a different guess.');
         return;
     }
     
-    // Send to backend
+    // All tests passed -- send to backend
     const response = await fetch('/analyze', {
         method: 'POST',
         headers: {
@@ -179,26 +165,25 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     currentRemaining = data.remaining;
     if (pattern === 'GGGGG') {
         alert(`Word found: ${guess.toUpperCase()}!`);
-        currentRow = 6; // Set to max to prevent more guesses
+        // Stop things by setting currentRow to max
+        currentRow = 6;
     } else {
         displayResults(data);
         currentRow++;
     }
 });
 
-// Reset button
 document.getElementById('resetBtn').addEventListener('click', () => {
-    // Clear the board
     document.querySelectorAll('.cell').forEach(cell => {
         cell.textContent = '';
         cell.classList.remove('gray', 'yellow', 'green');
     });
     
-    // Reset state
     currentRow = 0;
     currentRemaining = null;
     
-    // Clear results
     document.getElementById('stats').innerHTML = '';
     document.getElementById('solutions').innerHTML = '';
 });
+
+createGrid();

@@ -161,7 +161,7 @@
     }
 
     .progress-bar.excellent { background: #10b981; }
-    .progress-bar.good { background: #3b82f6; }
+    .progress-bar.good { background: #5cabec; }
     .progress-bar.decent { background: #f59e0b; }
     .progress-bar.poor { background: #ef4444; }
 
@@ -191,19 +191,23 @@
         .container {
             grid-template-columns: 1fr;
         }
+
+        header {
+            justify-content: center;
+        }
     }
 </style>
 </head>
 <body>
     <header>
         <h1>Pearlman's Wordle Solver</h1>
-        <button id="resetBtn">Reset</button>
     </header>
 
     <main class="container">
         <div class="left-section">
             <div id="board"></div>
             <button id="submitBtn">Analyze Guess</button>
+            <button id="resetBtn">Reset</button>
         </div>
 
         <div class="right-section">
