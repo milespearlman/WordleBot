@@ -4,6 +4,14 @@ An interactive web application that helps solve Wordle puzzles using mathematica
 
 🔗 **[Live Demo](https://pearlmans-wordle-solver.onrender.com)**
 
+## Screenshots
+
+### Main Interface
+![Main Interface](mainInterface.png)
+
+### Analysis Results
+![Analysis Results](analysisResults.png)
+
 ## Features
 
 - Interactive 5x6 Wordle-style grid with click-to-toggle colors
