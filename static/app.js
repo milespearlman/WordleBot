@@ -213,6 +213,18 @@ if (isMobile) {
         }
         mobileInput.value = '';
     });
+
+    mobileInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace') {
+            const currentCells = document.querySelectorAll(`[data-row="${currentRow}"]`);
+            const filledCells = Array.from(currentCells).filter(cell => cell.textContent);
+            if (filledCells.length > 0) {
+                const lastCell = filledCells[filledCells.length - 1];
+                lastCell.textContent = '';
+                lastCell.classList.remove('gray', 'yellow', 'green');
+            }
+        }
+    });
 }
 
 createGrid();
