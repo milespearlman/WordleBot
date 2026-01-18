@@ -2,7 +2,7 @@
 
 An interactive web application that helps solve Wordle puzzles using mathematical optimization to suggest the best next guesses.
 
-🔗 **[Live Demo](https://pearlmans-wordle-solver.onrender.com)**
+[**→ Try it here**](https://pearlmans-wordle-solver.onrender.com)
 
 ## Screenshots
 
